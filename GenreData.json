@@ -1,0 +1,22 @@
+[
+  {
+    "id": "3db3d878-e8c2-4fd2-b9f4-d01416b17005",
+    "Name": "Pop"
+  },
+  {
+    "id": "a5d77108-da85-468f-92cd-de4c118b85ca",
+    "Name": "Rock"
+  },
+  {
+    "id": "d8026bcf-51f0-4982-b865-a533ae9dcb1e",
+    "Name": "Jazz"
+  },
+  {
+    "id": "f07fed53-9ee4-47f5-82f1-be9a7f181fd3",
+    "Name": "Classical"
+  },
+  {
+    "id": "8759b6bf-ee3d-48e7-a02f-635a844ceab1",
+    "Name": "Hip Hop"
+  }
+]

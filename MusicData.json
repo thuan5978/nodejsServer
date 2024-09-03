@@ -1,0 +1,41 @@
+[
+  {
+    "id": "6a487add-78b4-4028-a679-79f50c5948bb",
+    "MusicName": "Bohemian Rhapsody",
+    "Img": "bohemian_rhapsody.jpg",
+    "GenreName": "Rock"
+  },
+  {
+    "id": "639aab12-aebb-45c0-aa62-8a532861b10e",
+    "MusicName": "Blinding Lights",
+    "Img": "blinding_lights.jpg",
+    "GenreName": "Pop"
+  },
+  {
+    "id": "411313fb-d5dd-4acf-ab11-3b45aa377fd9",
+    "MusicName": "So What",
+    "Img": "so_what.jpg",
+    "GenreName": "Jazz"
+  },
+  {
+    "id": "f9d642ed-c272-44d9-a8a4-e28787a21fd0",
+    "MusicName": "Clair de Lune",
+    "Img": "clair_de_lune.jpg",
+    "GenreName": "Classical"
+  },
+  {
+    "id": "30411971-63e9-4943-945b-c6f33d6280aa",
+    "MusicName": "Sicko Mode",
+    "Img": "sicko_mode.jpg",
+    "GenreName": "Hip Hop"
+  },
+  {
+    "MusicName": "Sicko Mode",
+    "Musician": "Travis Scott",
+    "Duration": "5:12",
+    "Listen": 15000000,
+    "Date": "2018-08-03",
+    "Resolution": "High",
+    "GenreName": "Hip Hop"
+  }
+]

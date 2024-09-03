@@ -1,0 +1,47 @@
+[
+  {
+    "MusicName": "Bohemian Rhapsody",
+    "Musician": "Queen",
+    "Duration": "5:55",
+    "Listen": 20000000,
+    "Date": "1975-10-31",
+    "Resolution": "High",
+    "GenreName": "Rock"
+  },
+  {
+    "MusicName": "Blinding Lights",
+    "Musician": "The Weeknd",
+    "Duration": "3:20",
+    "Listen": 35000000,
+    "Date": "2019-11-29",
+    "Resolution": "High",
+    "GenreName": "Pop"
+  },
+  {
+    "MusicName": "So What",
+    "Musician": "Miles Davis",
+    "Duration": "9:22",
+    "Listen": 5000000,
+    "Date": "1959-08-17",
+    "Resolution": "High",
+    "GenreName": "Jazz"
+  },
+  {
+    "MusicName": "Clair de Lune",
+    "Musician": "Claude Debussy",
+    "Duration": "5:00",
+    "Listen": 7000000,
+    "Date": "1905-04-02",
+    "Resolution": "High",
+    "GenreName": "Classical"
+  },
+  {
+    "MusicName": "Sicko Mode",
+    "Musician": "Travis Scott",
+    "Duration": "5:12",
+    "Listen": 15000000,
+    "Date": "2018-08-03",
+    "Resolution": "High",
+    "GenreName": "Hip Hop"
+  }
+]

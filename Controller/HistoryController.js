@@ -3,10 +3,11 @@ const path = require('path');
 const { v4: uuidv4 } = require('uuid');
 
 class HistoryController {
-    constructor(historyDataFile, createMusicHistoryFile, listenMusicHistoryFile) {
+    constructor(historyDataFile, createMusicHistoryFile, listenMusicHistoryFile, songDataFile) {
         this.historyDataFile = historyDataFile;
         this.createMusicHistoryFile = createMusicHistoryFile;
         this.listenMusicHistoryFile = listenMusicHistoryFile;
+        this.songDataFile = songDataFile; 
     }
 
     loadHistoryData(filePath) {
@@ -28,28 +29,40 @@ class HistoryController {
     }
 
     async addHistory(req, res) {
-        const { HISDATE, HISDURATION, HISTYPE, SOLUONG } = req.body;
+        const { HISDATE, HISDURATION, HISTYPE, SOLUONG, songID } = req.body;
 
-        if (!HISDATE || !HISDURATION || !HISTYPE || !SOLUONG) {
+        if (!HISDATE || !HISDURATION || !HISTYPE || !SOLUONG || !songID) {
             return res.status(400).json({ message: 'Tất cả các trường đều bắt buộc' });
         }
 
         try {
+            // Tải dữ liệu bài hát
+            const songs = this.loadHistoryData(this.songDataFile);
+            const song = songs.find(s => s.id === songID);
+
+            if (!song) {
+                return res.status(404).json({ message: 'Không tìm thấy bài hát' });
+            }
+
+            // Thêm lịch sử chính
             const histories = this.loadHistoryData(this.historyDataFile);
-            const newHistory = { ID: uuidv4(), HISDATE, HISDURATION, HISTYPE };
+            const newHistory = { ID: uuidv4(), HISDATE, HISDURATION, HISTYPE, songName: song.name };
             histories.push(newHistory);
             this.saveHistoryData(this.historyDataFile, histories);
 
+            // Thêm vào lịch sử tạo hoặc nghe nhạc
             if (HISTYPE === 'create') {
                 const createMusicHistory = this.loadHistoryData(this.createMusicHistoryFile);
-                const newCreateHistory = { IDLSTAO: newHistory.ID, SOLUONG };
+                const newCreateHistory = { IDLSTAO: newHistory.ID, SOLUONG, songName: song.name };
                 createMusicHistory.push(newCreateHistory);
                 this.saveHistoryData(this.createMusicHistoryFile, createMusicHistory);
             } else if (HISTYPE === 'listen') {
                 const listenMusicHistory = this.loadHistoryData(this.listenMusicHistoryFile);
-                const newListenHistory = { IDLSNGHE: newHistory.ID, SOLUONG };
+                const newListenHistory = { IDLSNGHE: newHistory.ID, SOLUONG, songName: song.name };
                 listenMusicHistory.push(newListenHistory);
                 this.saveHistoryData(this.listenMusicHistoryFile, listenMusicHistory);
+            } else {
+                return res.status(400).json({ message: 'Loại lịch sử không hợp lệ' });
             }
 
             res.json({ message: 'Thêm lịch sử thành công' });

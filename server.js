@@ -14,6 +14,12 @@ const port = process.env.PORT || 3000;
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Create uploads directory if it does not exist
+const uploadDir = path.join(__dirname, 'uploads');
+if (!fs.existsSync(uploadDir)) {
+  fs.mkdirSync(uploadDir);
+}
+
 // Multer setup for handling multipart/form-data
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
@@ -24,7 +30,17 @@ const storage = multer.diskStorage({
     cb(null, uniqueSuffix + '-' + file.originalname);
   }
 });
-const upload = multer({ storage: storage });
+const upload = multer({
+  storage: storage,
+  fileFilter: (req, file, cb) => {
+    if (file.mimetype.startsWith('audio/')) {
+      cb(null, true);
+    } else {
+      cb(new Error('Invalid file type. Only audio files are allowed.'), false);
+    }
+  },
+  limits: { fileSize: 10 * 1024 * 1024 } // Giới hạn kích thước tệp
+});
 
 // Middleware to authenticate user based on JWT
 const secretKey = 'abc123'; 
@@ -48,8 +64,8 @@ app.listen(port, () => {
 const userDataFile = path.join(__dirname, 'userData.json');
 const GenreDataFile = path.join(__dirname,'GenreData.json');
 const HistoryDataFile = path.join(__dirname,'HistoryData.json');
-const CreateMusicHistoryFile = path.join(__dirname,'createMusicHistoryFile');
-const ListenMusicHistoryFile = path.join(__dirname,'listenMusicHistoryFile');
+const CreateMusicHistoryFile = path.join(__dirname,'createMusicHistoryFile.json');
+const ListenMusicHistoryFile = path.join(__dirname,'listenMusicHistoryFile.json');
 const MusicDataFile = path.join(__dirname,'MusicData.json');
 const MusicDetailDataFile = path.join(__dirname,'MusicDetailData.json');
 const PlaylistDataFile = path.join(__dirname,'PlaylistData.json');

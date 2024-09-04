@@ -157,6 +157,80 @@ class PlaylistController {
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     }    
+
+    async playRandomSong(req, res) {
+        const { PlaylistName } = req.body;
+    
+        if (!PlaylistName) {
+            return res.status(400).json({ message: 'Tên playlist là bắt buộc' });
+        }
+
+        try {
+            const Playlists = this.loadPlaylistData();
+            const playlist = Playlists.find(p => p.PlaylistName === PlaylistName);
+
+            if (!playlist || playlist.songs.length === 0) {
+                return res.status(404).json({ message: 'Playlist không tìm thấy hoặc trống' });
+            }
+
+            const Musics = this.loadMusicData();
+            const randomIndex = Math.floor(Math.random() * playlist.songs.length);
+            const randomSongId = playlist.songs[randomIndex];
+            const randomSong = Musics.find(m => m.id === randomSongId);
+
+            if (!randomSong) {
+                return res.status(404).json({ message: 'Bài hát không tìm thấy' });
+            }
+
+            res.json({ song: randomSong, message: `Phát ngẫu nhiên bài hát: ${randomSong.SongName}` });
+        } catch (error) {
+            console.error('Lỗi khi phát ngẫu nhiên:', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    }
+
+    async playNextSong(req, res) {
+        const { PlaylistName, currentSongId, repeat } = req.body;
+
+        if (!PlaylistName || !currentSongId) {
+            return res.status(400).json({ message: 'Tên playlist và ID bài hát hiện tại là bắt buộc' });
+        }
+
+        try {
+            const Playlists = this.loadPlaylistData();
+            const playlist = Playlists.find(p => p.PlaylistName === PlaylistName);
+
+            if (!playlist || playlist.songs.length === 0) {
+                return res.status(404).json({ message: 'Playlist không tìm thấy hoặc trống' });
+            }
+
+            const Musics = this.loadMusicData();
+            const currentIndex = playlist.songs.indexOf(currentSongId);
+
+            if (currentIndex === -1) {
+                return res.status(404).json({ message: 'Bài hát hiện tại không tìm thấy trong playlist' });
+            }
+
+            let nextIndex;
+            if (repeat) {
+                nextIndex = currentIndex; // Phát lại bài hiện tại nếu repeat được bật
+            } else {
+                nextIndex = (currentIndex + 1) % playlist.songs.length; // Lặp lại từ đầu nếu đến cuối playlist
+            }
+
+            const nextSongId = playlist.songs[nextIndex];
+            const nextSong = Musics.find(m => m.id === nextSongId);
+
+            if (!nextSong) {
+                return res.status(404).json({ message: 'Bài hát tiếp theo không tìm thấy' });
+            }
+
+            res.json({ song: nextSong, message: `Phát bài hát tiếp theo: ${nextSong.SongName}` });
+        } catch (error) {
+            console.error('Lỗi khi phát bài hát tiếp theo:', error);
+            res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
+        }
+    }
 }
 
 module.exports = PlaylistController;

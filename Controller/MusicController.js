@@ -1,13 +1,16 @@
 const fs = require('fs');
 const path = require('path');
+const bcrypt = require('bcrypt');
+const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
+const token = "";
 
 class MusicController {
     constructor(MusicDataFile, GenreDataFile, secretKey, createMusicHistoryFile) {
         this.MusicDataFile = MusicDataFile;
         this.GenreDataFile = GenreDataFile;
         this.secretKey = secretKey;
-        this.createMusicHistoryFile = createMusicHistoryFile; // Đường dẫn đến tệp lưu lịch sử tạo nhạc
+        this.createMusicHistoryFile = createMusicHistoryFile; 
     }
 
     loadMusicData() {
@@ -101,7 +104,6 @@ class MusicController {
         }
     }
 
-    // Các phương thức khác không thay đổi
 }
 
 module.exports = MusicController;

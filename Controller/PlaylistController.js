@@ -39,9 +39,11 @@ class PlaylistController {
 
     savePlaylistData(data) {
         try {
+            console.log('Saving playlist data:', data);
+            console.log('To file:', this.PlaylistDataFile);
             fs.writeFileSync(this.PlaylistDataFile, JSON.stringify(data, null, 2), 'utf8');
         } catch (error) {
-            console.error('Lỗi khi lưu dữ liệu playlist:', error);
+            console.error('Error saving playlist data:', error);
         }
     }
 
@@ -57,37 +59,70 @@ class PlaylistController {
 
     saveMusicData(data) {
         try {
+            console.log('Saving music data:', data);
+            console.log('To file:', this.MusicDataFile);
             fs.writeFileSync(this.MusicDataFile, JSON.stringify(data, null, 2), 'utf8');
         } catch (error) {
-            console.error('Lỗi khi lưu dữ liệu bài hát:', error);
+            console.error('Error saving music data:', error);
         }
     }
-
+    
+    loadUserData() {
+        try {
+            const data = fs.readFileSync(this.UserDataFile, 'utf8');
+            // Nếu dữ liệu trống, trả về mảng rỗng
+            if (!data.trim()) {
+                console.log('Dữ liệu người dùng trống.');
+                return [];
+            }
+            const parsedData = JSON.parse(data);
+            console.log('Dữ liệu người dùng:', parsedData);
+            return parsedData;
+        } catch (error) {
+            console.error('Lỗi khi tải dữ liệu người dùng:', error);
+            return [];
+        }
+    }      
+    
     async addPlaylist(req, res) {
         const { UserID, PlaylistName, PlaylistType, Date } = req.body;
-        
+    
         if (!UserID || !PlaylistName || !PlaylistType || !Date) {
             return res.status(400).json({ message: 'Tất cả các trường đều yêu cầu' });
         }
-
+    
         try {
+            // Kiểm tra người dùng
+            const Users = this.loadUserData();
+            console.log('Người dùng:', Users); // Thêm dòng này để kiểm tra dữ liệu người dùng
+            const userExists = Users.some(user => user.id === UserID);
+            if (!userExists) {
+                return res.status(404).json({ message: 'UserID không tồn tại' });
+            }
+    
+            // Kiểm tra playlist đã tồn tại
             const Playlists = this.loadPlaylistData();
             const existingPlaylist = Playlists.find(playlist => playlist.PlaylistName === PlaylistName && playlist.UserID === UserID);
             if (existingPlaylist) {
                 return res.status(400).json({ message: 'Playlist đã tồn tại' });
             }
-
+    
+            // Thêm playlist mới
             const newPlaylist = { id: uuidv4(), PlaylistName, PlaylistType, Date, UserID, songs: [] };
             Playlists.push(newPlaylist);
             this.savePlaylistData(Playlists);
-
-            res.json({ message: 'Tạo playlist thành công' });
+    
+            res.json({ message: 'Tạo playlist thành công', id: newPlaylist.id });
         } catch (error) {
             console.error('Lỗi khi thêm playlist:', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     }
-
+    
+    
+    
+    
+    
     async addSongToPlaylist(req, res) {
         const { PlaylistName, MusicName } = req.body;
     

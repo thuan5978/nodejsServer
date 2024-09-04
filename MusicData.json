@@ -28,14 +28,5 @@
     "MusicName": "Sicko Mode",
     "Img": "sicko_mode.jpg",
     "GenreName": "Hip Hop"
-  },
-  {
-    "MusicName": "Sicko Mode",
-    "Musician": "Travis Scott",
-    "Duration": "5:12",
-    "Listen": 15000000,
-    "Date": "2018-08-03",
-    "Resolution": "High",
-    "GenreName": "Hip Hop"
   }
 ]

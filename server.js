@@ -6,9 +6,11 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const { v4: uuidv4 } = require('uuid');
 const bodyParser = require('body-parser');
+const dotenv = require('dotenv').config();
 
 const app = express();
 const port = process.env.PORT || 3000;
+
 
 // Middleware setup
 app.use(bodyParser.json());
@@ -43,7 +45,7 @@ const upload = multer({
 });
 
 // Middleware to authenticate user based on JWT
-const secretKey = 'abc123'; 
+const secretKey = process.env.JWT_SECRET;
 
 function authenticateToken(req, res, next) {
   const authHeader = req.headers['authorization'];
@@ -61,14 +63,14 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-const userDataFile = path.join(__dirname, 'userData.json');
-const GenreDataFile = path.join(__dirname,'GenreData.json');
-const HistoryDataFile = path.join(__dirname,'HistoryData.json');
-const CreateMusicHistoryFile = path.join(__dirname,'createMusicHistoryFile.json');
-const ListenMusicHistoryFile = path.join(__dirname,'listenMusicHistoryFile.json');
-const MusicDataFile = path.join(__dirname,'MusicData.json');
-const MusicDetailDataFile = path.join(__dirname,'MusicDetailData.json');
-const PlaylistDataFile = path.join(__dirname,'PlaylistData.json');
+const userDataFile = process.env.USER_DATA_FILE || path.join(__dirname, 'userData.json');
+const GenreDataFile = process.env.GENRE_DATA_FILE || path.join(__dirname, 'GenreData.json');
+const HistoryDataFile = process.env.HISTORY_DATA_FILE|| path.join(__dirname,'HistoryData.json');
+const CreateMusicHistoryFile = process.env.CREATE_MUSIC_HISTORY_FILE || path.join(__dirname,'createMusicHistoryFile.json');
+const ListenMusicHistoryFile = process.env.LISTEN_MUSIC_HISTORY_FILE || path.join(__dirname,'listenMusicHistoryFile.json');
+const MusicDataFile = process.env.MUSIC_DATA_FILE || path.join(__dirname,'MusicData.json');
+const MusicDetailDataFile = process.env.MUSIC_DETAIL_DATA_FILE || path.join(__dirname,'MusicDetailData.json');
+const PlaylistDataFile = process.env.PLAYLIST_DATA_FILE || path.join(__dirname,'PlaylistData.json');
 
 // AuthController
 const AuthController = require('./Controller/authController');

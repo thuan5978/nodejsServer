@@ -14,11 +14,14 @@ class AuthController {
   loadUserData() {
     try {
       const data = fs.readFileSync(this.userDataFile, 'utf8');
+      console.log('Dữ liệu người dùng đã đọc:', data); // Thêm log này để kiểm tra dữ liệu đọc được
       return JSON.parse(data);
     } catch (error) {
+      console.error('Lỗi khi đọc dữ liệu:', error);
       return [];
     }
   }
+  
 
   saveUserData(data) {
     fs.writeFileSync(this.userDataFile, JSON.stringify(data, null, 2), 'utf8');

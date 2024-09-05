@@ -60,11 +60,11 @@ class MusicController {
     }
 
     async addMusic(req, res) {
-        const { MusicName, Img, GenreName } = req.body;
+        const { MusicName, Img, GenreName, URL } = req.body;
         console.log('Nội dung yêu cầu:', req.body);  // Ghi log nội dung yêu cầu
     
         if (!MusicName || !Img || !GenreName) {
-            return res.status(400).json({ message: 'Tất cả các trường đều yêu cầu' });
+            return res.status(400).json({ message: 'Tất cả các trường MusicName, Img, và GenreName đều yêu cầu' });
         }
     
         try {
@@ -80,10 +80,13 @@ class MusicController {
                 return res.status(400).json({ message: 'Âm nhạc đã tồn tại' });
             }
     
-            const newMusic = { id: uuidv4(), MusicName, Img, GenreName };
+            // Nếu URL có giá trị, dùng giá trị đó; nếu không, đặt là chuỗi rỗng
+            const musicURL = URL ? URL : "";
+    
+            const newMusic = { id: uuidv4(), MusicName, Img, GenreName, URL: musicURL };
             Musics.push(newMusic);
             this.saveMusicData(Musics);
-
+    
             // Ghi lịch sử tạo nhạc
             const createMusicHistory = this.loadHistoryData(this.createMusicHistoryFile);
             const newMusicHistory = {
@@ -92,17 +95,19 @@ class MusicController {
                 MusicName: newMusic.MusicName,
                 Img: newMusic.Img,
                 GenreName: newMusic.GenreName,
+                URL: newMusic.URL,
                 createdAt: new Date().toISOString()
             };
             createMusicHistory.push(newMusicHistory);
             this.saveHistoryData(this.createMusicHistoryFile, createMusicHistory);
     
-            res.json({ message: 'Tạo âm nhạc thành công' });
+            res.json({ message: 'Tạo âm nhạc thành công', music: newMusic });
         } catch (error) {
             console.error('Lỗi khi thêm âm nhạc:', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     }
+    
 
 }
 

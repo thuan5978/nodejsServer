@@ -65,24 +65,7 @@ class PlaylistController {
         } catch (error) {
             console.error('Error saving music data:', error);
         }
-    }
-    
-    loadUserData() {
-        try {
-            const data = fs.readFileSync(this.UserDataFile, 'utf8');
-            // Nếu dữ liệu trống, trả về mảng rỗng
-            if (!data.trim()) {
-                console.log('Dữ liệu người dùng trống.');
-                return [];
-            }
-            const parsedData = JSON.parse(data);
-            console.log('Dữ liệu người dùng:', parsedData);
-            return parsedData;
-        } catch (error) {
-            console.error('Lỗi khi tải dữ liệu người dùng:', error);
-            return [];
-        }
-    }      
+    }  
     
     async addPlaylist(req, res) {
         const { UserID, PlaylistName, PlaylistType, Date } = req.body;
@@ -94,7 +77,7 @@ class PlaylistController {
         try {
             // Kiểm tra người dùng
             const Users = this.loadUserData();
-            console.log('Người dùng:', Users); // Thêm dòng này để kiểm tra dữ liệu người dùng
+            console.log('Người dùng:', Users); 
             const userExists = Users.some(user => user.id === UserID);
             if (!userExists) {
                 return res.status(404).json({ message: 'UserID không tồn tại' });
@@ -119,18 +102,15 @@ class PlaylistController {
         }
     }
     
-    
-    
-    
-    
     async addSongToPlaylist(req, res) {
-        const { PlaylistName, MusicName } = req.body;
+        const { PlaylistName, musicID } = req.body;
     
-        if (!PlaylistName || !MusicName) {
-            return res.status(400).json({ message: 'Tên playlist và tên bài hát là bắt buộc' });
+        if (!PlaylistName || !musicID) {
+            return res.status(400).json({ message: 'Tên playlist và musicID là bắt buộc' });
         }
     
         try {
+            // Tải dữ liệu playlists và nhạc
             const Playlists = this.loadPlaylistData();
             const playlist = Playlists.find(playlist => playlist.PlaylistName === PlaylistName);
     
@@ -139,7 +119,7 @@ class PlaylistController {
             }
     
             const Musics = this.loadMusicData();
-            const song = Musics.find(m => m.SongName === MusicName);
+            const song = Musics.find(m => m.id === musicID);
     
             if (!song) {
                 return res.status(404).json({ message: 'Bài hát không tìm thấy' });
@@ -149,50 +129,71 @@ class PlaylistController {
                 return res.status(400).json({ message: 'Bài hát đã tồn tại trong playlist' });
             }
     
+            // Thêm bài hát vào playlist
             playlist.songs.push(song.id);
             this.savePlaylistData(Playlists);
     
+            // Tạo tên file an toàn cho playlist
             const safePlaylistName = PlaylistName.replace(/\s+/g, '_');
-            const playlistFilePath = path.join(__dirname, 'playlists', `${safePlaylistName}.txt`);
+            const playlistDir = path.join(__dirname, 'playlists');
+            const playlistFilePath = path.join(playlistDir, `${safePlaylistName}.txt`);
     
-            if (!fs.existsSync(path.join(__dirname, 'playlists'))) {
-                fs.mkdirSync(path.join(__dirname, 'playlists'));
+            // Đảm bảo thư mục tồn tại
+            if (!fs.existsSync(playlistDir)) {
+                fs.mkdirSync(playlistDir);
             }
     
-            fs.appendFileSync(playlistFilePath, `${song.SongName}\n`, 'utf8');
+            // Sử dụng phiên bản async của ghi file để tránh chặn event loop
+            await fs.promises.appendFile(playlistFilePath, `${song.SongName}\n`, 'utf8');
     
-            res.json({ message: `Bài hát đã được thêm vào playlist '${PlaylistName}' và ghi vào file ${safePlaylistName}.txt` });
+            res.json({
+                message: `Bài hát đã được thêm vào playlist '${PlaylistName}' và ghi vào file ${safePlaylistName}.txt`
+            });
         } catch (error) {
             console.error('Lỗi khi thêm bài hát vào playlist:', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
     }
     
-    async getPlaylistByName(req, res) {
-        const { PlaylistName } = req.body;
+    async getPlaylist(req, res) {
+        const { PlaylistID, PlaylistName } = req.body;
     
-        if (!PlaylistName) {
-            return res.status(400).json({ message: 'Tên playlist là bắt buộc' });
+        // Kiểm tra nếu cả PlaylistID và PlaylistName đều không có
+        if (!PlaylistID && !PlaylistName) {
+            return res.status(400).json({ message: 'PlaylistID hoặc PlaylistName là bắt buộc' });
         }
     
         try {
             const Playlists = this.loadPlaylistData();
-            const playlist = Playlists.find(playlist => playlist.PlaylistName === PlaylistName);
+            let playlist;
     
+            // Tìm kiếm theo PlaylistID nếu có
+            if (PlaylistID) {
+                playlist = Playlists.find(p => p.id === PlaylistID);
+            }
+    
+            // Nếu không tìm thấy bằng PlaylistID, thử tìm bằng PlaylistName
+            if (!playlist && PlaylistName) {
+                playlist = Playlists.find(p => p.PlaylistName === PlaylistName);
+            }
+    
+            // Nếu không tìm thấy playlist
             if (!playlist) {
                 return res.status(404).json({ message: 'Playlist không tìm thấy' });
             }
     
+            // Tìm kiếm các bài hát trong playlist
             const Musics = this.loadMusicData();
             const songs = playlist.songs.map(songId => Musics.find(m => m.id === songId)).filter(song => song);
     
+            // Trả về playlist cùng với danh sách bài hát
             res.json({ playlist: { ...playlist, songs }, message: 'Thành công' });
         } catch (error) {
             console.error('Lỗi khi lấy playlist:', error);
             res.status(500).json({ message: 'Lỗi máy chủ nội bộ' });
         }
-    }    
-
+    }
+       
     async playRandomSong(req, res) {
         const { PlaylistName } = req.body;
     

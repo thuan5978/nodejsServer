@@ -99,11 +99,11 @@ app.post('/api/musicdetail/getMusicDetailByMusicName', authenticateToken, (req, 
 
 // PlaylistController
 const PlaylistController = require('./Controller/PlaylistController');
-const playlistController = new PlaylistController(PlaylistDataFile, MusicDataFile, secretKey);
+const playlistController = new PlaylistController(userDataFile, PlaylistDataFile, MusicDataFile, secretKey);
 
 app.post('/api/playlist/addPlaylist', authenticateToken, (req, res) => playlistController.addPlaylist(req, res));
 app.post('/api/playlist/addSongToPlaylist', authenticateToken, (req, res) => playlistController.addSongToPlaylist(req, res));
-app.post('/api/playlist/getPlaylistByName', authenticateToken, (req, res) => playlistController.getPlaylistByName(req, res));
+app.post('/api/playlist/getPlaylistByName', authenticateToken, (req, res) => playlistController.getPlaylist(req, res));
 
 // HistoryController
 const HistoryController = require('./Controller/HistoryController');

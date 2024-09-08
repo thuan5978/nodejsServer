@@ -29,29 +29,34 @@ class AuthController {
   async signUp(req, res) {
     const { Username, Email, Password } = req.body;
     console.log('Request body:', req.body);
-
+  
     if (!Username || !Email || !Password) {
+      console.log('Missing fields');
       return res.status(400).json({ message: 'All fields are required' });
     }
-
+  
     try {
       const users = this.loadUserData();
+      console.log('Loaded users:', users);
       const existingUser = users.find(user => user.Email === Email);
       if (existingUser) {
+        console.log('User already exists:', existingUser);
         return res.status(400).json({ message: 'User already exists' });
       }
-
+  
       const hashedPassword = await bcrypt.hash(Password, 8);
+      console.log('Hashed password:', hashedPassword);
       const newUser = { id: uuidv4(), Username, Email, Password: hashedPassword };
       users.push(newUser);
       this.saveUserData(users);
-
+  
       res.json({ message: 'SignUp successful' });
     } catch (error) {
       console.error('Error signing up:', error);
       res.status(500).json({ message: 'Internal server error' });
     }
   }
+  
 
   async signIn(req, res) {
     const { Email, Password } = req.body;

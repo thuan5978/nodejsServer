@@ -63,14 +63,35 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-const userDataFile = process.env.USER_DATA_FILE || path.join(__dirname, 'userData.json');
-const GenreDataFile = process.env.GENRE_DATA_FILE || path.join(__dirname, 'GenreData.json');
-const HistoryDataFile = process.env.HISTORY_DATA_FILE|| path.join(__dirname,'HistoryData.json');
-const CreateMusicHistoryFile = process.env.CREATE_MUSIC_HISTORY_FILE || path.join(__dirname,'createMusicHistoryFile.json');
-const ListenMusicHistoryFile = process.env.LISTEN_MUSIC_HISTORY_FILE || path.join(__dirname,'listenMusicHistoryFile.json');
-const MusicDataFile = process.env.MUSIC_DATA_FILE || path.join(__dirname,'MusicData.json');
-const MusicDetailDataFile = process.env.MUSIC_DETAIL_DATA_FILE || path.join(__dirname,'MusicDetailData.json');
-const PlaylistDataFile = process.env.PLAYLIST_DATA_FILE || path.join(__dirname,'PlaylistData.json');
+const dataDir = path.join(__dirname, 'data');
+if (!fs.existsSync(dataDir)) {
+  fs.mkdirSync(dataDir);
+}
+
+const ensureFileExists = (filePath) => {
+  if (!fs.existsSync(filePath)) {
+    fs.writeFileSync(filePath, JSON.stringify([]), { flag: 'wx' }); // Create an empty JSON array file if it doesn't exist
+  }
+};
+
+const userDataFile = process.env.USER_DATA_FILE || path.join(dataDir, 'userData.json');
+const GenreDataFile = process.env.GENRE_DATA_FILE || path.join(dataDir, 'GenreData.json');
+const HistoryDataFile = process.env.HISTORY_DATA_FILE|| path.join(dataDir,'HistoryData.json');
+const CreateMusicHistoryFile = process.env.CREATE_MUSIC_HISTORY_FILE || path.join(dataDir,'createMusicHistoryFile.json');
+const ListenMusicHistoryFile = process.env.LISTEN_MUSIC_HISTORY_FILE || path.join(dataDir,'listenMusicHistoryFile.json');
+const MusicDataFile = process.env.MUSIC_DATA_FILE || path.join(dataDir,'MusicData.json');
+const MusicDetailDataFile = process.env.MUSIC_DETAIL_DATA_FILE || path.join(dataDir,'MusicDetailData.json');
+const PlaylistDataFile = process.env.PLAYLIST_DATA_FILE || path.join(dataDir,'PlaylistData.json');
+
+// Ensure all required JSON files are created
+ensureFileExists(userDataFile);
+ensureFileExists(GenreDataFile);
+ensureFileExists(HistoryDataFile);
+ensureFileExists(CreateMusicHistoryFile);
+ensureFileExists(ListenMusicHistoryFile);
+ensureFileExists(MusicDataFile);
+ensureFileExists(MusicDetailDataFile);
+ensureFileExists(PlaylistDataFile);
 
 // AuthController
 const AuthController = require('./controllers/authController');

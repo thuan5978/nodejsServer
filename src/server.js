@@ -73,7 +73,7 @@ const MusicDetailDataFile = process.env.MUSIC_DETAIL_DATA_FILE || path.join(__di
 const PlaylistDataFile = process.env.PLAYLIST_DATA_FILE || path.join(__dirname,'PlaylistData.json');
 
 // AuthController
-const AuthController = require('./src/controllers/authController');
+const AuthController = require('./controllers/authController');
 const authController = new AuthController(userDataFile, secretKey);
 
 app.post('/api/Auth/signUp', upload.none(), (req, res) => authController.signUp(req, res));
@@ -83,7 +83,7 @@ app.post('/api/Auth/updateProfile', authenticateToken, (req, res) => authControl
 app.post('/api/Auth/changePassword', authenticateToken, (req, res) => authController.changePassword(req, res));
 
 // MusicController
-const MusicController = require('./src/controllers/MusicController');
+const MusicController = require('./controllers/MusicController');
 const musicController = new MusicController(MusicDataFile, GenreDataFile, secretKey);
 
 app.post('/api/music/addMusic', authenticateToken, (req, res) => musicController.addMusic(req, res));
@@ -93,14 +93,14 @@ app.delete('/api/music/removeMusicByID', authenticateToken, (req, res) => musicC
 app.put('/api/music/updateMusicByID', authenticateToken, (req, res) => musicController.updateMusicByID(req, res));
 
 // MusicDetailController
-const MusicDetailController = require('./src/controllers/MusicDetailController');
+const MusicDetailController = require('./controllers/MusicDetailController');
 const musicDetailController = new MusicDetailController(MusicDetailDataFile, secretKey);
 
 app.post('/api/musicdetail/addMusicDetail', authenticateToken, (req, res) => musicDetailController.addMusicDetail(req, res));
 app.post('/api/musicdetail/getMusicDetailByMusicName', authenticateToken, (req, res) => musicDetailController.getMusicDetailByMusicName(req, res));
 
 // PlaylistController
-const PlaylistController = require('./src/controllers/PlaylistController');
+const PlaylistController = require('./controllers/PlaylistController');
 const playlistController = new PlaylistController(userDataFile, PlaylistDataFile, MusicDataFile, secretKey);
 
 app.post('/api/playlist/addPlaylist', authenticateToken, (req, res) => playlistController.addPlaylist(req, res));
@@ -108,7 +108,7 @@ app.post('/api/playlist/addSongToPlaylist', authenticateToken, (req, res) => pla
 app.post('/api/playlist/getPlaylistByName', authenticateToken, (req, res) => playlistController.getPlaylist(req, res));
 
 // HistoryController
-const HistoryController = require('./src/controllers/HistoryController');
+const HistoryController = require('./controllers/HistoryController');
 const historyController = new HistoryController(HistoryDataFile, CreateMusicHistoryFile, ListenMusicHistoryFile, secretKey);
 
 app.post('/api/history/addHistory', authenticateToken, (req, res) => historyController.addHistory(req, res));
@@ -117,7 +117,7 @@ app.post('/api/history/getHistoryById', authenticateToken, (req, res) => history
 app.post('/api/history/removeHistoryById', authenticateToken, (req, res) => historyController.removeHistoryById(req, res));
 
 // GenreController
-const GenreController = require('./src/controllers/GenreController');
+const GenreController = require('./controllers/GenreController');
 const genreController = new GenreController(GenreDataFile, secretKey);
 
 app.post('/api/genre/addGenre', authenticateToken, (req, res) => genreController.addGenre(req, res));

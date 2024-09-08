@@ -63,10 +63,10 @@ app.listen(port, () => {
   console.log(`Server is running on http://localhost:${port}`);
 });
 
-const dataDir = path.join(__dirname, 'data');
-if (!fs.existsSync(dataDir)) {
-  fs.mkdirSync(dataDir);
-}
+//const dataDir = path.join(__dirname, 'data');
+//if (!fs.existsSync(dataDir)) {
+//  fs.mkdirSync(dataDir);
+//}
 
 const ensureFileExists = (filePath) => {
   if (!fs.existsSync(filePath)) {
@@ -74,15 +74,23 @@ const ensureFileExists = (filePath) => {
   }
 };
 
-const userDataFile = process.env.USER_DATA_FILE || path.join(dataDir, 'userData.json');
-const GenreDataFile = process.env.GENRE_DATA_FILE || path.join(dataDir, 'GenreData.json');
-const HistoryDataFile = process.env.HISTORY_DATA_FILE|| path.join(dataDir,'HistoryData.json');
-const CreateMusicHistoryFile = process.env.CREATE_MUSIC_HISTORY_FILE || path.join(dataDir,'createMusicHistoryFile.json');
-const ListenMusicHistoryFile = process.env.LISTEN_MUSIC_HISTORY_FILE || path.join(dataDir,'listenMusicHistoryFile.json');
-const MusicDataFile = process.env.MUSIC_DATA_FILE || path.join(dataDir,'MusicData.json');
-const MusicDetailDataFile = process.env.MUSIC_DETAIL_DATA_FILE || path.join(dataDir,'MusicDetailData.json');
-const PlaylistDataFile = process.env.PLAYLIST_DATA_FILE || path.join(dataDir,'PlaylistData.json');
+//const userDataFile = process.env.USER_DATA_FILE || path.join(dataDir, 'userData.json');
+//const GenreDataFile = process.env.GENRE_DATA_FILE || path.join(dataDir, 'GenreData.json');
+//const HistoryDataFile = process.env.HISTORY_DATA_FILE|| path.join(dataDir,'HistoryData.json');
+//const CreateMusicHistoryFile = process.env.CREATE_MUSIC_HISTORY_FILE || path.join(dataDir,'createMusicHistoryFile.json');
+//const ListenMusicHistoryFile = process.env.LISTEN_MUSIC_HISTORY_FILE || path.join(dataDir,'listenMusicHistoryFile.json');
+//const MusicDataFile = process.env.MUSIC_DATA_FILE || path.join(dataDir,'MusicData.json');
+//const MusicDetailDataFile = process.env.MUSIC_DETAIL_DATA_FILE || path.join(dataDir,'MusicDetailData.json');
+//const PlaylistDataFile = process.env.PLAYLIST_DATA_FILE || path.join(dataDir,'PlaylistData.json');
 
+const userDataFile = process.env.USER_DATA_FILE ;
+const GenreDataFile = process.env.GENRE_DATA_FILE ;
+const HistoryDataFile = process.env.HISTORY_DATA_FILE ;
+const CreateMusicHistoryFile = process.env.CREATE_MUSIC_HISTORY_FILE ;
+const ListenMusicHistoryFile = process.env.LISTEN_MUSIC_HISTORY_FILE ;
+const MusicDataFile = process.env.MUSIC_DATA_FILE ;
+const MusicDetailDataFile = process.env.MUSIC_DETAIL_DATA_FILE ;
+const PlaylistDataFile = process.env.PLAYLIST_DATA_FILE ;
 // Ensure all required JSON files are created
 ensureFileExists(userDataFile);
 ensureFileExists(GenreDataFile);

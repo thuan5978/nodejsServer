@@ -61,12 +61,23 @@ class AuthController {
   async signIn(req, res) {
     const { Email, Password } = req.body;
     const users = this.loadUserData();
-
+    
+    console.log('Email:', Email);
+    console.log('Password:', Password);
+  
     const user = users.find(user => user.Email === Email);
-    if (!user || !(await bcrypt.compare(Password, user.Password))) {
+    if (!user) {
+      console.log('User not found');
       return res.status(400).json({ message: 'Invalid email or password' });
     }
-
+  
+    const passwordMatch = await bcrypt.compare(Password, user.Password);
+    console.log('Password match:', passwordMatch);
+  
+    if (!passwordMatch) {
+      return res.status(400).json({ message: 'Invalid email or password' });
+    }
+  
     const token = jwt.sign({ id: user.id, Email: user.Email, Username: user.Username }, this.secretKey);
     res.json({ message: 'Signin successful', token, user: user });
   }
